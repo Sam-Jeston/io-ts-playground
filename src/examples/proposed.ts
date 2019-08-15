@@ -1,20 +1,8 @@
 import * as t from 'io-ts'
-import { ThrowReporter } from 'io-ts/lib/ThrowReporter'
-
-export interface Endpoint {
-  name: string
-  describe: Function
-  validateArgs: Function
-  validateReturn: Function
-}
-
-function throwIfDecodeFails<Codec extends { decode: Function }>(codec: Codec, data: any) {
-  const decodingResult = codec.decode(data)
-  ThrowReporter.report(decodingResult)
-}
+import { createEndpoint } from '../lib'
 
 const Slot = t.type({
-  getSlot: t.Int
+  getSlot: t.number
 });
 // Ledger.Value.CurrencySymbol
 const CurrencySymbol = t.type({
@@ -29,7 +17,7 @@ const MapTokenNameInteger = t.type({
   unMap: t.array(
     t.tuple([
       TokenName,
-      t.Int
+      t.number
     ])
   )
 });
@@ -53,7 +41,7 @@ const VestingTranche = t.type({
 });
 // Wallet.Emulator.Types.Wallet
 const Wallet = t.type({
-  getWallet: t.Int
+  getWallet: t.number
 });
 
 const VestFundsReturn = t.null;
@@ -63,34 +51,12 @@ const VestFundsArgs = t.type({
   c: Wallet
 })
 
-export type VestFunds = (args: t.TypeOf<typeof VestFundsArgs>) => t.TypeOf<typeof VestFundsReturn>;
-export const VestFundsEndpoint: Endpoint = {
-  name: 'VestFunds',
-  describe: () => ({
-    args: RegisterVestingSchemeArgs.name,
-    return: RegisterVestingSchemeReturn.name
-  }),
-  validateArgs: (data: any) => throwIfDecodeFails(RegisterVestingSchemeArgs, data),
-  validateReturn: (data: any) => throwIfDecodeFails(RegisterVestingSchemeReturn, data)
-}
-
 const RegisterVestingSchemeReturn = t.null;
 const RegisterVestingSchemeArgs = t.type({
   a: VestingTranche,
   b: VestingTranche,
   c: Wallet
 })
-
-export type RegisterVestingScheme = (args: t.TypeOf<typeof RegisterVestingSchemeArgs>) => t.TypeOf<typeof RegisterVestingSchemeReturn>;
-export const RegisterVestingSchemeEndpoint: Endpoint = {
-  name: 'RegisterVestingScheme',
-  describe: () => ({
-    args: RegisterVestingSchemeArgs.name,
-    return: RegisterVestingSchemeReturn.name
-  }),
-  validateArgs: RegisterVestingSchemeArgs.decode,
-  validateReturn: RegisterVestingSchemeReturn.decode
-}
 
 const WithdrawReturn = t.null;
 const WithdrawArgs = t.type({
@@ -100,15 +66,6 @@ const WithdrawArgs = t.type({
   d: Value
 })
 
-export type Withdraw = (args: t.TypeOf<typeof WithdrawArgs>) => t.TypeOf<typeof WithdrawReturn>;
-export const WithdrawEndpoint: Endpoint = {
-  name: 'Withdraw',
-  describe: () => ({
-    args: RegisterVestingSchemeArgs.name,
-    return: RegisterVestingSchemeReturn.name
-  }),
-  validateArgs: WithdrawArgs.decode,
-  validateReturn: WithdrawReturn.decode
-}
-
-export const endpoints: Endpoint[] = [VestFundsEndpoint, RegisterVestingSchemeEndpoint, WithdrawEndpoint]
+export const VestFunds = createEndpoint<typeof VestFundsArgs, typeof VestFundsReturn, t.NullC>('VestFunds', VestFundsArgs, VestFundsReturn)
+export const RegisterVestingScheme = createEndpoint<typeof RegisterVestingSchemeArgs, typeof RegisterVestingSchemeReturn, t.NullC>('RegisterVestingScheme', RegisterVestingSchemeArgs, RegisterVestingSchemeReturn)
+export const Withdraw = createEndpoint<typeof WithdrawArgs, typeof WithdrawReturn, t.NullC>('Withdraw', WithdrawArgs, WithdrawReturn)

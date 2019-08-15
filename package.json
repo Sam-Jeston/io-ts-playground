@@ -4,7 +4,8 @@
   "description": "A playground for defining io-ts types and how they should be consumed the the SCB and Plutus clients",
   "main": "index.js",
   "scripts": {
-    "start": "npx tsc && node dist/index.js"
+    "ts-example": "npx tsc && node dist/index.js",
+    "js-example": "npx tsc && node example.js"
   },
   "repository": {
     "type": "git",

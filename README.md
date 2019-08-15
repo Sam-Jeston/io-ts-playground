@@ -15,6 +15,7 @@ The changes have been proposed for these reasons:
 
 The proposed changes allow the io-ts generation to remain in Typescript, but once compiled into a JS, with associated .d.ts file for TS consumers, the JS can be readily consumed at runtime for validation and AST descriptions (potentially for dynamic UIs), while the TS can be used for developers writing typesafe applications that will consume a known contract definition.
 
-## Other questions
+## Other questions / comments
 
-1. Is there a way we can key the arguments by something more human friendly than a, b, c, d etc?
+1. Use t.number instead of t.Int
+2. Is there a way we can key the arguments by something more human friendly than a, b, c, d etc?
