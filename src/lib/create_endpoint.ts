@@ -6,17 +6,17 @@ export function createEndpoint<A extends t.Any, R extends t.Any, S extends t.Any
   return {
     name,
     call: async (data, resolverFunction, state) => {
-      const validContractInput = validateAgainstCodec(argsCodec as any, data)
+      const validContractInput = validateAgainstCodec(argsCodec, data)
       if (!validContractInput) throw new Error('Bad input')
 
       if (state) {
-        const validContractState = validateAgainstCodec(stateCodec as any, data)
+        const validContractState = validateAgainstCodec(stateCodec, data)
         if (!validContractState) throw new Error('Bad contract state')
       }
 
       const contractResult = await resolverFunction(data, state)
 
-      const validContractOutput = validateAgainstCodec(returnCodec as any, contractResult)
+      const validContractOutput = validateAgainstCodec(returnCodec, contractResult)
       if (!validContractOutput) throw new Error('Invalid contract return type')
 
       return contractResult
